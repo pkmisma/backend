@@ -1,0 +1,32 @@
+image:
+  repository: backend-api
+  tag: "1.0.0-prod"
+  pullPolicy: Always
+
+replicaCount: 3
+
+env:
+  APP_ENV: prod
+  APP_VERSION: "1.0.0-prod"
+  PORT: "3000"
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: standard
+
+ingress:
+  enabled: true
+  className: nginx
+  host: api.example.com
+  path: /
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /

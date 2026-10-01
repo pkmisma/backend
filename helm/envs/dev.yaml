@@ -1,0 +1,14 @@
+image:
+  repository: backend-api
+  tag: "1.0.0-dev"
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+env:
+  APP_ENV: dev
+  APP_VERSION: "1.0.0-dev"
+  PORT: "3000"
+
+persistence:
+  enabled: false

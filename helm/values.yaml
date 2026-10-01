@@ -1,0 +1,49 @@
+image:
+  repository: backend-api
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+replicaCount: 2
+
+service:
+  type: ClusterIP
+  port: 80
+
+containerPort: 3000
+
+env:
+  APP_ENV: dev
+  APP_VERSION: "1.0.0"
+  PORT: "3000"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: ""
+  mountPath: /data
+
+probes:
+  liveness:
+    path: /healthz
+    initialDelaySeconds: 15
+    periodSeconds: 10
+  readiness:
+    path: /healthz
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+ingress:
+  enabled: false
+  className: nginx
+  host: api.example.local
+  path: /
+
+imagePullSecrets: []
