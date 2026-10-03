@@ -1,3 +1,4 @@
+namespace: cosmic-prd
 env: prod
 replicaCount: 3
 resources:

@@ -4,6 +4,9 @@ nameOverride: ""
 # Stable service name so the frontend can reach it as http://cosmic-backend:<port>
 fullnameOverride: cosmic-backend
 
+# Target namespace (set per environment in envs/*.yaml)
+namespace: cosmic-dev
+
 env: local
 replicaCount: 1
 

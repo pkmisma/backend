@@ -21,8 +21,8 @@ npm install && npm test && npm start   # http://localhost:3000
 3. **Deploy** - Helm, same namespace as the frontend:
 ```
 helm upgrade --install cosmic-backend ./helm \
-  -n cosmic-facts --create-namespace \
-  -f helm/values.yaml -f helm/envs/<dev|staging|prod>.yaml \
+  -n cosmic-<dev|pre|prd> --create-namespace \
+  -f helm/values.yaml -f helm/envs/<dev|pre|prod>.yaml \
   --set image.repository=<registry>/cosmic-backend --set image.tag=<tag>
 ```
 The Service is named `cosmic-backend` (ClusterIP, port 80) - the frontend proxies `/api` to it.
