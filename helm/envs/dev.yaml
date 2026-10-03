@@ -1,7 +1,4 @@
-image:
-  repository: backend-api
-  tag: "1.0.0-dev"
-  pullPolicy: IfNotPresent
+
 
 replicaCount: 1
 
@@ -12,3 +9,15 @@ env:
 
 persistence:
   enabled: false
+
+env: dev
+namespace: frontend-dev   # CHANGE_ME
+ingress:
+  enabled: true
+  host: release-status.dev.example.com   # CHANGE_ME
+
+image:
+  repository: <+pipeline.stages.Build_Image.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>
+  tag: "<+pipeline.stages.Build_Image.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>"            # defaults to Chart appVersion
+  full: ""           # if set (e.g. <+artifact.image> from Harness), overrides repository:tag
+  pullPolicy: IfNotPresent
