@@ -1,23 +1,7 @@
-
-
-replicaCount: 1
-
-env:
-  APP_ENV: dev
-  APP_VERSION: "1.0.0-dev"
-  PORT: "3000"
-
-persistence:
-  enabled: false
-
 env: dev
-namespace: frontend-dev   # CHANGE_ME
-ingress:
-  enabled: true
-  host: release-status.dev.example.com   # CHANGE_ME
-
+replicaCount: 1
 image:
-  repository: <+pipeline.stages.Build_Image.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>
-  tag: "<+pipeline.stages.Build_Image.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>"            # defaults to Chart appVersion
-  full: ""           # if set (e.g. <+artifact.image> from Harness), overrides repository:tag
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
+resources:
+  requests: { cpu: 50m, memory: 64Mi }
+  limits: { cpu: 200m, memory: 128Mi }

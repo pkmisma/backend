@@ -1,49 +1,25 @@
+# Default values - override per environment with envs/<env>.yaml
+# The backend is only reachable inside the cluster; the frontend nginx proxies /api to it.
+nameOverride: ""
+# Stable service name so the frontend can reach it as http://cosmic-backend:<port>
+fullnameOverride: cosmic-backend
+
+env: local
+replicaCount: 1
+
 image:
-  repository: backend-api
-  tag: "1.0.0"
+  repository: your-registry/cosmic-backend
+  tag: latest
   pullPolicy: IfNotPresent
 
-replicaCount: 2
-
 service:
-  type: ClusterIP
   port: 80
-
-containerPort: 3000
-
-env:
-  APP_ENV: dev
-  APP_VERSION: "1.0.0"
-  PORT: "3000"
+  targetPort: 3000
 
 resources:
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 50m
+    memory: 64Mi
   limits:
-    cpu: 500m
-    memory: 256Mi
-
-persistence:
-  enabled: true
-  size: 1Gi
-  storageClass: ""
-  mountPath: /data
-
-probes:
-  liveness:
-    path: /healthz
-    initialDelaySeconds: 15
-    periodSeconds: 10
-  readiness:
-    path: /healthz
-    initialDelaySeconds: 5
-    periodSeconds: 5
-
-ingress:
-  enabled: false
-  className: nginx
-  host: api.example.local
-  path: /
-
-imagePullSecrets: []
+    cpu: 200m
+    memory: 128Mi
