@@ -1,6 +1,6 @@
 image:
   repository: pkmisma/sample-microservice-backend
-  tag: <+pipeline.executionId>
+  tag: <+pipeline.stages.Build_Image.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
   pullPolicy: IfNotPresent
 
 # Default values - override per environment with envs/<env>.yaml
