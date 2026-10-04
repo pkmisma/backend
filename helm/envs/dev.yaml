@@ -1,23 +1,28 @@
+image:
+  repository: pkmisma/sample-microservice-backend
+  tag: <+pipeline.stages.Build_Image.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>
+  pullPolicy: IfNotPresent
 
+# Default values - override per environment with envs/<env>.yaml
+# The backend is only reachable inside the cluster; the frontend nginx proxies /api to it.
+nameOverride: ""
+# Stable service name so the frontend can reach it as http://cosmic-backend:<port>
+fullnameOverride: cosmic-backend
 
-replicaCount: 1
-
-env:
-  APP_ENV: dev
-  APP_VERSION: "1.0.0-dev"
-  PORT: "3000"
-
-persistence:
-  enabled: false
+# Target namespace (set per environment in envs/*.yaml)
+namespace: cosmic-dev
 
 env: dev
-namespace: frontend-dev   # CHANGE_ME
-ingress:
-  enabled: true
-  host: release-status.dev.example.com   # CHANGE_ME
+replicaCount: 1
 
-image:
-  repository: <+pipeline.stages.Build_Image.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].imageName>
-  tag: "<+pipeline.stages.Build_Image.spec.execution.steps.BuildAndPushDockerRegistry_1.artifact_BuildAndPushDockerRegistry_1.stepArtifacts.publishedImageArtifacts[0].tag>"            # defaults to Chart appVersion
-  full: ""           # if set (e.g. <+artifact.image> from Harness), overrides repository:tag
-  pullPolicy: IfNotPresent
+service:
+  port: 80
+  targetPort: 3000
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi

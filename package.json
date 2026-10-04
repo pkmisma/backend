@@ -1,13 +1,14 @@
 {
-  "name": "feedback-api",
+  "name": "cosmic-facts-backend",
   "version": "1.0.0",
-  "description": "Visitor feedback API",
+  "description": "Cosmic Facts API - serves space facts and tracks likes",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "test": "node --test test/"
   },
+  "engines": { "node": ">=20" },
   "dependencies": {
-    "better-sqlite3": "^11.3.0",
-    "express": "^4.19.2"
+    "express": "^4.21.0"
   }
 }

@@ -1,80 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ include "cosmic-backend.fullname" . }}
+  namespace: {{ .Values.namespace }}
   labels:
-    {{- include "backend.labels" . | nindent 4 }}
+    {{- include "cosmic-backend.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "backend.selectorLabels" . | nindent 6 }}
+      {{- include "cosmic-backend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "backend.selectorLabels" . | nindent 8 }}
+        {{- include "cosmic-backend.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: backend
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.containerPort }}
+              containerPort: {{ .Values.service.targetPort }}
           env:
             - name: PORT
-              value: {{ .Values.env.PORT | quote }}
+              value: {{ .Values.service.targetPort | quote }}
             - name: APP_ENV
-              value: {{ .Values.env.APP_ENV | quote }}
+              value: {{ .Values.env | quote }}
             - name: APP_VERSION
-              value: {{ .Values.env.APP_VERSION | quote }}
-            - name: DB_PATH
-              value: {{ .Values.persistence.mountPath }}/feedback.db
-          {{- if .Values.persistence.enabled }}
-          volumeMounts:
-            - name: data
-              mountPath: {{ .Values.persistence.mountPath }}
-          {{- end }}
-          livenessProbe:
-            httpGet:
-              path: {{ .Values.probes.liveness.path }}
-              port: http
-            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+              value: {{ .Values.image.tag | quote }}
           readinessProbe:
             httpGet:
-              path: {{ .Values.probes.readiness.path }}
+              path: /healthz
               port: http
-            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
-            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      {{- if .Values.persistence.enabled }}
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-data
-      {{- end }}
----
-{{- if .Values.persistence.enabled }}
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Release.Name }}-data
-  labels:
-    {{- include "backend.labels" . | nindent 4 }}
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.persistence.size | quote }}
-  {{- if .Values.persistence.storageClass }}
-  storageClassName: {{ .Values.persistence.storageClass | quote }}
-  {{- end }}
----
-{{- end }}
